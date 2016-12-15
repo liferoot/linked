@@ -87,13 +87,16 @@ func (l *List) Push(value interface{}) *Node {
 	}
 	node, ok := value.(*Node)
 	if ok {
-		if node.list != nil && node.list != l {
-			node.list.length--
+		if node.list != l {
+			if node.list != nil {
+				node.list.length--
+			}
+			l.length++
 		}
 	} else {
 		node = &Node{Value: value}
+		l.length++
 	}
-	l.length++
 	return l.root.Attach(node)
 }
 
