@@ -2,7 +2,9 @@ package linked
 
 type Node struct {
 	next, prev *Node
-	list       *List
+
+	// The List to which this Node belongs.
+	list *List
 
 	// The value stored with this Node.
 	Value interface{}
@@ -53,7 +55,7 @@ func (n *Node) Next() *Node {
 	return n.next
 }
 
-// Prev returns the pointer the previous Node or nil.
+// Prev returns the pointer to the previous Node or nil.
 func (n *Node) Prev() *Node {
 	if n.list != nil && n.prev == &n.list.root {
 		return nil

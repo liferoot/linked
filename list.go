@@ -5,8 +5,11 @@ type List struct {
 	length int
 }
 
+// Len returns the number of Node's actually contained in the List.
+// The complexity is O(1).
 func (l *List) Len() int { return l.length }
 
+// First returns the first Node of the List or nil.
 func (l *List) First() *Node {
 	if l.length == 0 {
 		return nil
@@ -14,6 +17,7 @@ func (l *List) First() *Node {
 	return l.root.next
 }
 
+// Last returns the last Node of the List or nil.
 func (l *List) Last() *Node {
 	if l.length == 0 {
 		return nil
@@ -21,27 +25,53 @@ func (l *List) Last() *Node {
 	return l.root.prev
 }
 
+// Add adds new Node's containing the specified valuees at the end of the List,
+// returns the last Node added or nil.
 func (l *List) Add(value ...interface{}) *Node {
 	if len(value) == 0 {
 		return nil
 	}
+	if l.root.next == nil && len(value) > 0 {
+		l.Init()
+	}
 	return l.insert(l.root.prev, value)
 }
 
-func (l *List) InsertAfter(mark *Node, value ...interface{}) *Node {
-	if mark == nil && len(value) > 0 {
+// AddAfter adds a new Node's containing the specified values after
+// the specified existing Node in the List.
+func (l *List) AddAfter(mark *Node, value ...interface{}) *Node {
+	if l.root.next == nil && len(value) > 0 {
+		l.Init()
+	}
+	if mark == nil {
+		if len(value) == 0 {
+			return nil
+		}
 		mark = &l.root
+	} else if mark.list != l {
+		return nil
 	}
 	return l.insert(mark, value)
 }
 
-func (l *List) InsertBefore(mark *Node, value ...interface{}) *Node {
-	if mark == nil && len(value) > 0 {
+// AddBefore adds a new Node's containing the specified values before
+// the specified existing Node in the List.
+func (l *List) AddBefore(mark *Node, value ...interface{}) *Node {
+	if l.root.next == nil && len(value) > 0 {
+		l.Init()
+	}
+	if mark == nil {
+		if len(value) == 0 {
+			return nil
+		}
 		mark = &l.root
+	} else if mark.list != l {
+		return nil
 	}
 	return l.insert(mark.prev, value)
 }
 
+// Pop removes the first Node and returns its value.
 func (l *List) Pop() interface{} {
 	if l.length == 0 {
 		return nil
@@ -50,7 +80,11 @@ func (l *List) Pop() interface{} {
 	return l.root.next.Detach().Value
 }
 
+// Push adds a new Node containing specified value at the top of the List.
 func (l *List) Push(value interface{}) *Node {
+	if l.root.next == nil {
+		l.Init()
+	}
 	node, ok := value.(*Node)
 	if ok {
 		if node.list != nil && node.list != l {
@@ -64,6 +98,13 @@ func (l *List) Push(value interface{}) *Node {
 }
 
 func (l *List) Remove(node ...*Node) (value interface{}) {
+	if l.length == 0 {
+		return nil
+	}
+	if len(node) == 0 {
+		l.length--
+		return l.First().Detach().Value
+	}
 	for _, n := range node {
 		if n == nil || n.list != l {
 			continue
