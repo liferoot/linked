@@ -25,7 +25,7 @@ func (l *List) Last() *Node {
 	return l.root.prev
 }
 
-// Add adds new Node's containing the specified valuees at the end of the List,
+// Add adds new Node's containing the specified values at the end of the List,
 // returns the last Node added or nil.
 func (l *List) Add(value ...interface{}) *Node {
 	if len(value) == 0 {
@@ -71,7 +71,7 @@ func (l *List) AddBefore(mark *Node, value ...interface{}) *Node {
 	return l.insert(mark.prev, value)
 }
 
-// Pop removes the first Node and returns its value.
+// Pop removes the Node at the top of the List and returns its value.
 func (l *List) Pop() interface{} {
 	if l.length == 0 {
 		return nil
@@ -97,6 +97,8 @@ func (l *List) Push(value interface{}) *Node {
 	return l.root.Attach(node)
 }
 
+// Remove removes the specified Node's from the List and
+// returns value of the last remote Node.
 func (l *List) Remove(node ...*Node) (value interface{}) {
 	if l.length == 0 {
 		return nil
@@ -115,6 +117,7 @@ func (l *List) Remove(node ...*Node) (value interface{}) {
 	return
 }
 
+// RemoveLast removes the Node at the end of the List and returns its value.
 func (l *List) RemoveLast() interface{} {
 	if l.length == 0 {
 		return nil
@@ -123,6 +126,7 @@ func (l *List) RemoveLast() interface{} {
 	return l.root.prev.Detach().Value
 }
 
+// Clear removes all Node's from the List.
 func (l *List) Clear() *List {
 	var next *Node
 
@@ -133,6 +137,7 @@ func (l *List) Clear() *List {
 	return l.Init()
 }
 
+// Init initializes the List.
 func (l *List) Init() *List {
 	l.root.next = &l.root
 	l.root.prev = &l.root
@@ -167,6 +172,7 @@ func (l *List) insert(mark *Node, value []interface{}) *Node {
 	return mark
 }
 
+// NewList returns an initialized List.
 func NewList(value ...interface{}) *List {
 	l := new(List).Init()
 	l.insert(&l.root, value)
