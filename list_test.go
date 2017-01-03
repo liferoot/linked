@@ -118,17 +118,14 @@ func TestList_Remove(t *testing.T) {
 		t.Errorf("expected value %v, got %v", nil, v)
 	}
 	l.Add(1, 2, 3, 4, 5)
-	if v := l.Remove(); v != 1 {
-		t.Errorf("expected first removed value %v, got %v", 1, v)
+	if v := l.Remove(); v != 5 {
+		t.Errorf("expected last removed value %v, got %v", 1, v)
 	}
-	if v := l.Remove(l.Last()); v != 5 {
-		t.Errorf("expected last removed value %v, got %v", 5, v)
-	}
-	chklist(t, ``, l, []interface{}{2, 3, 4})
+	chklist(t, `case 1`, l, []interface{}{1, 2, 3, 4})
 	if v := l.Remove(l.First(), l.Last()); v != 4 {
 		t.Errorf("expected last removed value %v, got %v", 4, v)
 	}
-	chklist(t, ``, l, []interface{}{3})
+	chklist(t, `case 2`, l, []interface{}{2, 3})
 }
 
 func TestList_RemoveFromAnotherList(t *testing.T) {
@@ -138,18 +135,6 @@ func TestList_RemoveFromAnotherList(t *testing.T) {
 	}
 	chklist(t, `l`, l, []interface{}{1, 2})
 	chklist(t, `ll`, ll, []interface{}{3, 4})
-}
-
-func TestList_RemoveLast(t *testing.T) {
-	l := NewList()
-	if v := l.RemoveLast(); v != nil {
-		t.Errorf("expected value %v, got %v", nil, v)
-	}
-	l.Add(1, 2, 3)
-	if v := l.RemoveLast(); v != 3 {
-		t.Errorf("expected value %v, got %v", 3, v)
-	}
-	chklist(t, ``, l, []interface{}{1, 2})
 }
 
 func chkempty(t *testing.T, prefix string, list *List) {

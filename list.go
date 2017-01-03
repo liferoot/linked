@@ -76,26 +76,18 @@ func (l *List) Pop() interface{} {
 	if l.length == 0 {
 		return nil
 	}
-	l.length--
 	return l.root.next.Detach().Value
 }
 
-// Push adds a new Node containing specified value at the top of the List.
+// Push adds the specified Node or the new Node containing
+// specified value at the top of the List.
 func (l *List) Push(value interface{}) *Node {
 	if l.root.next == nil {
 		l.Init()
 	}
 	node, ok := value.(*Node)
-	if ok {
-		if node.list != l {
-			if node.list != nil {
-				node.list.length--
-			}
-			l.length++
-		}
-	} else {
-		node = &Node{Value: value}
-		l.length++
+	if !ok {
+		node = NewNode(value)
 	}
 	return l.root.Attach(node)
 }
@@ -107,26 +99,15 @@ func (l *List) Remove(node ...*Node) (value interface{}) {
 		return nil
 	}
 	if len(node) == 0 {
-		l.length--
-		return l.First().Detach().Value
+		return l.root.prev.Detach().Value
 	}
 	for _, n := range node {
 		if n == nil || n.list != l {
 			continue
 		}
-		l.length--
 		value = n.Detach().Value
 	}
 	return
-}
-
-// RemoveLast removes the Node at the end of the List and returns its value.
-func (l *List) RemoveLast() interface{} {
-	if l.length == 0 {
-		return nil
-	}
-	l.length--
-	return l.root.prev.Detach().Value
 }
 
 // Clear removes all Node's from the List.
@@ -156,19 +137,10 @@ func (l *List) insert(mark *Node, value []interface{}) *Node {
 		v    interface{}
 	)
 	for _, v = range value {
-		if node, ok = v.(*Node); ok {
-			if node == mark {
-				continue
-			}
-			if node.list != mark.list {
-				if node.list != nil {
-					node.list.length--
-				}
-				l.length++
-			}
-		} else {
-			node = &Node{Value: v}
-			l.length++
+		if node, ok = v.(*Node); !ok {
+			node = NewNode(v)
+		} else if node == mark {
+			continue
 		}
 		mark = mark.Attach(node)
 	}

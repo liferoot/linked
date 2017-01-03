@@ -25,7 +25,16 @@ func (n *Node) Attach(node *Node) *Node {
 	}
 	node.next, n.next = n.next, node
 	node.prev = n
-	node.list = n.list
+
+	if node.list != n.list {
+		if node.list != nil {
+			node.list.length--
+		}
+		if n.list != nil {
+			n.list.length++
+		}
+		node.list = n.list
+	}
 	return node
 }
 
@@ -38,14 +47,16 @@ func (n *Node) Detach() *Node {
 	}
 	n.next = nil
 	n.prev = nil
-	n.list = nil
+
+	if n.list != nil {
+		n.list.length--
+		n.list = nil
+	}
 	return n
 }
 
 // List returns the pointer to the List that the Node belongs to.
-func (n *Node) List() *List {
-	return n.list
-}
+func (n *Node) List() *List { return n.list }
 
 // Next returns the pointer to the next Node or nil.
 func (n *Node) Next() *Node {
